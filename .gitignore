@@ -5,6 +5,10 @@
 [Bb]uild/
 [Bb]uilds/
 Assets/AssetStoreTools*
+EffectExamples/
+Allegorithmic/Plugins*
+Sonic Ether/
+TextMesh Pro/
 
 # Visual Studio 2015 cache directory
 /.vs/
