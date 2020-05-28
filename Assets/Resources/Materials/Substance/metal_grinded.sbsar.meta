@@ -18,12 +18,14 @@ ScriptedImporter:
     generateMipMaps: 1
     preset: " <sbspreset pkgurl=\"pkg://metal_grinded\" label=\"\" >\n  <presetinput
       identifier=\"$outputsize\" uid=\"1986453806\" type=\"8\" value=\"9,9\" />\n 
-      <presetinput identifier=\"$randomseed\" uid=\"555022204\" type=\"4\" value=\"4643\"
-      />\n  <presetinput identifier=\"color\" uid=\"42076609\" type=\"2\" value=\"0.990566,0.828605,0.719562\"
-      />\n  <presetinput identifier=\"grinding\" uid=\"42099902\" type=\"0\" value=\"0.13\"
+      <presetinput identifier=\"$randomseed\" uid=\"555022204\" type=\"4\" value=\"5901\"
+      />\n  <presetinput identifier=\"color\" uid=\"42076609\" type=\"2\" value=\"0.981132,0.981132,0.981132\"
+      />\n  <presetinput identifier=\"grinding\" uid=\"42099902\" type=\"0\" value=\"0\"
+      />\n  <presetinput identifier=\"slashes\" uid=\"42955659\" type=\"0\" value=\"0.15\"
+      />\n  <presetinput identifier=\"roughness\" uid=\"42080047\" type=\"0\" value=\"0.43\"
       />\n  <presetinput identifier=\"channel_diffuse\" uid=\"78510512\" type=\"4\"
       value=\"1\" />\n  <presetinput identifier=\"luminosity\" uid=\"1933203605\"
-      type=\"0\" value=\"0.63\" />\n </sbspreset>\n"
+      type=\"0\" value=\"0.8\" />\n </sbspreset>\n"
     shaderName: Standard
     materialProperties:
       shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
