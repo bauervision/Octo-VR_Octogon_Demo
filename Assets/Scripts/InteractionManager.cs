@@ -9,9 +9,12 @@ public class InteractionManager : MonoBehaviour
 {
     public GameObject LoginScreen;
     public Button SubmitButton;
+    public GameObject SummaryButton;
+
 
     #region privateMembers
 
+    private Color visitedTextColor = new Color32(243, 136, 50, 255);
     private string age = "Select Age Group";
     private string initial = "AI";
     private string chosen = "VR";
@@ -24,6 +27,7 @@ public class InteractionManager : MonoBehaviour
 
     private string[] capabilities = new string[] { "AI", "AG", "BC", "CL", "CY", "DS", "OP", "VR" };
 
+    private int visitedCapabilities = 0;
     #endregion
 
     /*  =============== JSON related =====================  */
@@ -52,6 +56,7 @@ public class InteractionManager : MonoBehaviour
     {
         StartCoroutine(GetRequest("https://us-central1-octo-ar-demo.cloudfunctions.net/getUsers"));
         SubmitButton.interactable = false;
+        SummaryButton.SetActive(false);
     }
 
     IEnumerator GetRequest(string url)
@@ -87,59 +92,73 @@ public class InteractionManager : MonoBehaviour
         selectedAgeGroup = ageGroups[ageInput];
     }
 
-    public void SetInitial(string initialInput)
-    {
-        initial = initialInput;
-    }
 
     #region capabilitySetters
+
+    private void handleTextColorChange(string textObj)
+    {
+        GameObject text = GameObject.Find(textObj);
+        if (text.GetComponent<Text>().color != visitedTextColor)
+        {
+            text.GetComponent<Text>().color = visitedTextColor;
+            visitedCapabilities++;
+
+        }
+
+    }
     public void Set_AI()
     {
         initial = capabilities[0];
-        print(initial);
+        handleTextColorChange("Text_AI");
     }
 
     public void Set_AG()
     {
         initial = capabilities[1];
-        print(initial);
+        handleTextColorChange("Text_AG");
     }
 
 
     public void Set_BC()
     {
         initial = capabilities[2];
-        print(initial);
+        handleTextColorChange("Text_BC");
+
     }
 
     public void Set_CL()
     {
         initial = capabilities[3];
-        print(initial);
+        handleTextColorChange("Text_CL");
+
     }
 
     public void Set_CY()
     {
         initial = capabilities[4];
-        print(initial);
+        handleTextColorChange("Text_CY");
+
     }
 
     public void Set_DS()
     {
         initial = capabilities[5];
-        print(initial);
+        handleTextColorChange("Text_DS");
+
     }
 
     public void Set_OP()
     {
         initial = capabilities[6];
-        print(initial);
+        handleTextColorChange("Text_OP");
+
     }
 
     public void Set_VR()
     {
         initial = capabilities[7];
-        print(initial);
+        handleTextColorChange("Text_VR");
+
     }
 
 
@@ -188,9 +207,17 @@ public class InteractionManager : MonoBehaviour
         bool validGender = ((selectedGender != "Select Gender") && (selectedGender != null));
         bool validAge = ((selectedAgeGroup != "Select Age Group") && (selectedAgeGroup != null));
 
+        // make sure they choose valid things before we let them submit
         if (validAge && validGender)
         {
             SubmitButton.interactable = true;
+        }
+
+        // once they have visited all capabilities
+        if (visitedCapabilities == 8)
+        {
+            // unlock view summary button
+            SummaryButton.SetActive(true);
         }
 
 
