@@ -11,14 +11,20 @@ public class InteractionManager : MonoBehaviour
     public Button SubmitButton;
     public GameObject SummaryButton;
     public GameObject SummaryScreen;
+    public Text totalDataText;
+    public Text initialText;
+    public Text chosenText;
+
 
 
     #region privateMembers
 
+    private int totalDataSize;
     private Color visitedTextColor = new Color32(243, 136, 50, 255);
+    private Color solidPanelColor = new Color32(255, 142, 0, 255);
     private string age = "Select Age Group";
-    private string initial = "AI";
-    private string chosen = "VR";
+    private string initial;
+    private string chosen;
 
 
     private string[] genders = new string[] { "Female", "Male", "Other" };
@@ -27,6 +33,7 @@ public class InteractionManager : MonoBehaviour
     private string selectedAgeGroup;
 
     private string[] capabilities = new string[] { "AI", "AG", "BC", "CL", "CY", "DS", "OP", "VR" };
+    private string[] capabilityStrings = new string[] { "Artificial Intelligence", "Agile DevOps", "Blockchain", "Cloud & Infrastructure", "Cyber", "Data Services", "Open Source", "Virtual Reality" };
 
     private int visitedCapabilities = 0;
     #endregion
@@ -78,11 +85,16 @@ public class InteractionManager : MonoBehaviour
             {
                 var data = webRequest.downloadHandler.text;
                 octoData = JsonUtility.FromJson<OctoDemoData>(data);
+
+                // now make some initial setting updates
+                SetUI();
+
             }
         }
     }
 
     #region Setters
+
     public void SetGender(int genderInput)
     {
         selectedGender = genders[genderInput];
@@ -93,6 +105,11 @@ public class InteractionManager : MonoBehaviour
         selectedAgeGroup = ageGroups[ageInput];
     }
 
+    private void SetUI()
+    {
+        totalDataSize = octoData.all.Count;
+        totalDataText.text = totalDataSize.ToString();
+    }
 
     #region capabilitySetters
 
@@ -109,55 +126,79 @@ public class InteractionManager : MonoBehaviour
     }
     public void Set_AI()
     {
-        initial = capabilities[0];
+        if (initial == null)
+        {
+            initial = capabilities[0];
+        }
+
         handleTextColorChange("Text_AI");
     }
 
     public void Set_AG()
     {
-        initial = capabilities[1];
+        if (initial == null)
+        {
+            initial = capabilities[1];
+        }
         handleTextColorChange("Text_AG");
     }
 
-
     public void Set_BC()
     {
-        initial = capabilities[2];
+        if (initial == null)
+        {
+            initial = capabilities[2];
+        }
         handleTextColorChange("Text_BC");
 
     }
 
     public void Set_CL()
     {
-        initial = capabilities[3];
+        if (initial == null)
+        {
+            initial = capabilities[3];
+        }
         handleTextColorChange("Text_CL");
 
     }
 
     public void Set_CY()
     {
-        initial = capabilities[4];
+        if (initial == null)
+        {
+            initial = capabilities[4];
+        }
         handleTextColorChange("Text_CY");
 
     }
 
     public void Set_DS()
     {
-        initial = capabilities[5];
+        if (initial == null)
+        {
+            initial = capabilities[5];
+        }
         handleTextColorChange("Text_DS");
 
     }
 
     public void Set_OP()
     {
-        initial = capabilities[6];
+        if (initial == null)
+        {
+            initial = capabilities[6];
+        }
         handleTextColorChange("Text_OP");
 
     }
 
     public void Set_VR()
     {
-        initial = capabilities[7];
+        if (initial == null)
+        {
+            initial = capabilities[7];
+        }
         handleTextColorChange("Text_VR");
 
     }
@@ -204,7 +245,21 @@ public class InteractionManager : MonoBehaviour
     public void ShowSummary()
     {
         SummaryScreen.SetActive(true);
+        FilterInitialData();
     }
+
+    private string handleTextSelectionDisplay()
+    {
+        // first grab the index within the shortened array
+        int index = System.Array.IndexOf(capabilities, initial);
+        // now return the full string from the other array
+        return capabilityStrings[index];
+    }
+    private void FilterInitialData()
+    {
+        initialText.text = handleTextSelectionDisplay();
+    }
+
 
     // Update is called once per frame
     void Update()
@@ -224,8 +279,6 @@ public class InteractionManager : MonoBehaviour
             // unlock view summary button
             SummaryButton.SetActive(true);
         }
-
-
 
 
 
