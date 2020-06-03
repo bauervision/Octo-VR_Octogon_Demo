@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -24,7 +25,7 @@ public class InteractionManager : MonoBehaviour
     private Color solidPanelColor = new Color32(255, 142, 0, 255);
     private string age = "Select Age Group";
     private string initial;
-    private string chosen;
+    private string chosen = "AG";
 
 
     private string[] genders = new string[] { "Female", "Male", "Other" };
@@ -85,10 +86,7 @@ public class InteractionManager : MonoBehaviour
             {
                 var data = webRequest.downloadHandler.text;
                 octoData = JsonUtility.FromJson<OctoDemoData>(data);
-
-                // now make some initial setting updates
-                SetUI();
-
+                print(octoData.all);
             }
         }
     }
@@ -105,11 +103,6 @@ public class InteractionManager : MonoBehaviour
         selectedAgeGroup = ageGroups[ageInput];
     }
 
-    private void SetUI()
-    {
-        totalDataSize = octoData.all.Count;
-        totalDataText.text = totalDataSize.ToString();
-    }
 
     #region capabilitySetters
 
@@ -248,16 +241,32 @@ public class InteractionManager : MonoBehaviour
         FilterInitialData();
     }
 
-    private string handleTextSelectionDisplay()
+    private string HandleTextDisplay(string choice)
     {
         // first grab the index within the shortened array
-        int index = System.Array.IndexOf(capabilities, initial);
+        int index = System.Array.IndexOf(capabilities, choice);
         // now return the full string from the other array
         return capabilityStrings[index];
     }
     private void FilterInitialData()
     {
-        initialText.text = handleTextSelectionDisplay();
+        // inital settings
+        totalDataSize = octoData.all.Count;
+        totalDataText.text = totalDataSize.ToString();
+        initialText.text = HandleTextDisplay(initial);
+        chosenText.text = HandleTextDisplay(chosen);
+
+        // now lets handle some filtering
+        // first setup all the capability categories
+
+        List<Users> femaleList = octoData.all.Where(x => x.gender == "Female").ToList();
+        List<Users> maleList = octoData.all.Where(x => x.gender == "Male").ToList();
+        List<Users> otherList = octoData.all.Where(x => x.gender == "Other").ToList();
+
+        print("Female: " + femaleList.Count);
+        print("Male: " + maleList.Count);
+        print("Other: " + otherList.Count);
+
     }
 
 
