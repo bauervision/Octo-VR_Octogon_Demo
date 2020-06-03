@@ -10,6 +10,7 @@ public class InteractionManager : MonoBehaviour
     public GameObject LoginScreen;
     public Button SubmitButton;
     public GameObject SummaryButton;
+    public GameObject SummaryScreen;
 
 
     #region privateMembers
@@ -200,6 +201,10 @@ public class InteractionManager : MonoBehaviour
     }
 
 
+    public void ShowSummary()
+    {
+        SummaryScreen.SetActive(true);
+    }
 
     // Update is called once per frame
     void Update()
