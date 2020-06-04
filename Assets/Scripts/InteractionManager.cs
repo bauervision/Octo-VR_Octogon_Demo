@@ -16,6 +16,11 @@ public class InteractionManager : MonoBehaviour
     public Text initialText;
     public Text chosenText;
 
+    public Text panel25Text;
+    public Text panel26Text;
+    public Text panel36Text;
+    public Text panel46Text;
+    public Text panel56Text;
 
 
     #region privateMembers
@@ -26,6 +31,9 @@ public class InteractionManager : MonoBehaviour
     private string age = "Select Age Group";
     private string initial;
     private string chosen = "AG";
+    private List<Users> femaleList;
+    private List<Users> maleList;
+    private List<Users> otherList;
 
 
     private string[] genders = new string[] { "Female", "Male", "Other" };
@@ -37,6 +45,20 @@ public class InteractionManager : MonoBehaviour
     private string[] capabilityStrings = new string[] { "Artificial Intelligence", "Agile DevOps", "Blockchain", "Cloud & Infrastructure", "Cyber", "Data Services", "Open Source", "Virtual Reality" };
 
     private int visitedCapabilities = 0;
+    private string viewAgeGroup = "Less than 25"; // default to the youngest age group
+
+
+    private GameObject panel25;
+    private GameObject panel26;
+    private GameObject panel36;
+    private GameObject panel46;
+    private GameObject panel56;
+
+    private Text dataSetText;
+
+
+    private bool showInitialData = true;
+
     #endregion
 
     /*  =============== JSON related =====================  */
@@ -51,7 +73,7 @@ public class InteractionManager : MonoBehaviour
     [System.Serializable]
     private class Users
     {
-        public int age;
+        public string age;
         public string gender;
         public string initial;
         public string chosen;
@@ -66,8 +88,29 @@ public class InteractionManager : MonoBehaviour
         StartCoroutine(GetRequest("https://us-central1-octo-ar-demo.cloudfunctions.net/getUsers"));
         SubmitButton.interactable = false;
         SummaryButton.SetActive(false);
+
+        InitializeUI();
     }
 
+    private void InitializeUI()
+    {
+        // set the panels
+        panel25 = GameObject.Find("Panel_25");
+        panel25.SetActive(true);
+        panel26 = GameObject.Find("Panel_26");
+        panel26.SetActive(false);
+        panel36 = GameObject.Find("Panel_36");
+        panel36.SetActive(false);
+        panel46 = GameObject.Find("Panel_46");
+        panel46.SetActive(false);
+        panel56 = GameObject.Find("Panel_56");
+        panel56.SetActive(false);
+
+        dataSetText = GameObject.Find("DataSetText").GetComponent<Text>();
+        // now hide the summary
+        SummaryScreen.SetActive(false);
+
+    }
     IEnumerator GetRequest(string url)
     {
         using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
@@ -86,7 +129,11 @@ public class InteractionManager : MonoBehaviour
             {
                 var data = webRequest.downloadHandler.text;
                 octoData = JsonUtility.FromJson<OctoDemoData>(data);
-                print(octoData.all);
+
+                femaleList = octoData.all.Where(x => x.gender == "Female").ToList();
+                maleList = octoData.all.Where(x => x.gender == "Male").ToList();
+                otherList = octoData.all.Where(x => x.gender == "Other").ToList();
+                print(octoData.all.Count + " points of Data Received");
             }
         }
     }
@@ -237,10 +284,22 @@ public class InteractionManager : MonoBehaviour
 
     public void ShowSummary()
     {
+        // general summary
+        totalDataSize = octoData.all.Count;
+        totalDataText.text = totalDataSize.ToString();
+        initialText.text = HandleTextDisplay(initial);
+        chosenText.text = HandleTextDisplay(chosen);
+        // display the panel
         SummaryScreen.SetActive(true);
-        FilterInitialData();
+        FilterData();
     }
 
+    public void ToggleDataDisplay()
+    {
+        showInitialData = !showInitialData;
+        FilterData();
+        dataSetText.text = showInitialData ? "Initial Interest Data Displayed" : "Chosen Interest Data Displayed";
+    }
     private string HandleTextDisplay(string choice)
     {
         // first grab the index within the shortened array
@@ -248,27 +307,112 @@ public class InteractionManager : MonoBehaviour
         // now return the full string from the other array
         return capabilityStrings[index];
     }
-    private void FilterInitialData()
+    private void FilterData()
     {
-        // inital settings
-        totalDataSize = octoData.all.Count;
-        totalDataText.text = totalDataSize.ToString();
-        initialText.text = HandleTextDisplay(initial);
-        chosenText.text = HandleTextDisplay(chosen);
-
-        // now lets handle some filtering
-        // first setup all the capability categories
-
-        List<Users> femaleList = octoData.all.Where(x => x.gender == "Female").ToList();
-        List<Users> maleList = octoData.all.Where(x => x.gender == "Male").ToList();
-        List<Users> otherList = octoData.all.Where(x => x.gender == "Other").ToList();
-
-        print("Female: " + femaleList.Count);
-        print("Male: " + maleList.Count);
-        print("Other: " + otherList.Count);
-
+        SetStrings("AI");
+        SetStrings("AG");
+        SetStrings("BC");
+        SetStrings("CL");
+        SetStrings("CY");
+        SetStrings("DS");
+        SetStrings("OP");
+        SetStrings("VR");
     }
 
+    private void SetStrings(string capability)
+    {
+        GameObject.Find($"Female-{capability}").GetComponent<Text>().text = HandleData(capability, femaleList);
+        GameObject.Find($"Male-{capability}").GetComponent<Text>().text = HandleData(capability, maleList);
+        GameObject.Find($"Other-{capability}").GetComponent<Text>().text = HandleData(capability, otherList);
+    }
+    private string HandleData(string parameter, List<Users> list)
+    {
+        // run filter first on parameter
+        IEnumerable parameterQuery = list.Where(x => (showInitialData ? x.initial : x.chosen) == parameter);
+
+        if (parameterQuery != null)
+        {
+            List<Users> parameterList = list.Where(x => (showInitialData ? x.initial : x.chosen) == parameter).ToList();
+            print("parameterList -> " + parameterList + "showInitialData -> " + showInitialData);
+            // now run filter on age group
+            IEnumerable ageQuery = parameterList.Where(y => y.age == viewAgeGroup);
+
+            if (ageQuery != null)
+            {
+                string newString = parameterList.Where(y => y.age == viewAgeGroup).ToList().Count.ToString();
+                if (newString == "0")
+                {
+                    return "";
+                }
+                return newString;
+            }
+            return "";
+
+        }
+
+        return "";
+    }
+
+
+    public void SetAge25()
+    {
+        viewAgeGroup = ageGroups[0];
+        FilterData();
+        // display proper panel, and turn off the others
+        panel25.SetActive(true);
+        panel26.SetActive(false);
+        panel36.SetActive(false);
+        panel46.SetActive(false);
+        panel56.SetActive(false);
+    }
+
+    public void SetAge26()
+    {
+        viewAgeGroup = ageGroups[1];
+        FilterData();
+        // display proper panel, and turn off the others
+        panel25.SetActive(false);
+        panel26.SetActive(true);
+        panel36.SetActive(false);
+        panel46.SetActive(false);
+        panel56.SetActive(false);
+    }
+
+    public void SetAge36()
+    {
+        viewAgeGroup = ageGroups[2];
+        FilterData();
+        // display proper panel, and turn off the others
+        panel25.SetActive(false);
+        panel26.SetActive(false);
+        panel36.SetActive(true);
+        panel46.SetActive(false);
+        panel56.SetActive(false);
+    }
+
+    public void SetAge46()
+    {
+        viewAgeGroup = ageGroups[3];
+        FilterData();
+        // display proper panel, and turn off the others
+        panel25.SetActive(false);
+        panel26.SetActive(false);
+        panel36.SetActive(false);
+        panel46.SetActive(true);
+        panel56.SetActive(false);
+    }
+
+    public void SetAge56()
+    {
+        viewAgeGroup = ageGroups[4];
+        FilterData();
+        // display proper panel, and turn off the others
+        panel25.SetActive(false);
+        panel26.SetActive(false);
+        panel36.SetActive(false);
+        panel46.SetActive(false);
+        panel56.SetActive(true);
+    }
 
     // Update is called once per frame
     void Update()
@@ -289,8 +433,12 @@ public class InteractionManager : MonoBehaviour
             SummaryButton.SetActive(true);
         }
 
-
-
+        // handle button switcher text based on showInitialData
+        panel25Text.text = showInitialData ? "Initial Interest" : "Chosen Interest";
+        panel26Text.text = showInitialData ? "Initial Interest" : "Chosen Interest";
+        panel36Text.text = showInitialData ? "Initial Interest" : "Chosen Interest";
+        panel46Text.text = showInitialData ? "Initial Interest" : "Chosen Interest";
+        panel56Text.text = showInitialData ? "Initial Interest" : "Chosen Interest";
     }
 
 }
