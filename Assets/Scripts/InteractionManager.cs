@@ -10,9 +10,15 @@ public class InteractionManager : MonoBehaviour
 {
     public GameObject LoadingScreen;
     public GameObject LoginScreen;
+    public GameObject InitialDialog;
+    public GameObject InitialPanel;
+
+
     public Button SubmitButton;
     public GameObject SummaryButton;
     public GameObject SummaryScreen;
+    public GameObject SummaryPanel;
+
     public Text totalDataText;
     public Text initialText;
     public Text chosenText;
@@ -93,8 +99,6 @@ public class InteractionManager : MonoBehaviour
     {
         StartCoroutine(GetRequest("https://us-central1-octo-ar-demo.cloudfunctions.net/getUsers"));
         SubmitButton.interactable = false;
-        SummaryButton.SetActive(false);
-
         InitializeUI();
     }
 
@@ -115,7 +119,8 @@ public class InteractionManager : MonoBehaviour
         dataSetText = GameObject.Find("DataSetText").GetComponent<Text>();
         // now hide the summary
         SummaryScreen.SetActive(false);
-
+        SummaryButton.SetActive(false);
+        SummaryPanel.SetActive(false);
     }
     IEnumerator GetRequest(string url)
     {
@@ -149,12 +154,13 @@ public class InteractionManager : MonoBehaviour
 
     public void SetGender(int genderInput)
     {
-        selectedGender = genders[genderInput];
+        selectedGender = genders[genderInput - 1];
     }
 
     public void SetAge(int ageInput)
     {
-        selectedAgeGroup = ageGroups[ageInput];
+        // account for the "Select..."
+        selectedAgeGroup = ageGroups[ageInput - 1];
     }
 
 
@@ -176,6 +182,14 @@ public class InteractionManager : MonoBehaviour
         if (initial == null)
         {
             initial = capabilities[0];
+            InitialPanel.SetActive(false);
+        }
+
+        if (visitedCapabilities == 8)
+        {
+            chosen = capabilities[0];
+            // unlock view summary button
+            SummaryButton.SetActive(true);
         }
 
         handleTextColorChange("Text_AI");
@@ -186,6 +200,14 @@ public class InteractionManager : MonoBehaviour
         if (initial == null)
         {
             initial = capabilities[1];
+            InitialPanel.SetActive(false);
+        }
+
+        if (visitedCapabilities == 8)
+        {
+            chosen = capabilities[1];
+            // unlock view summary button
+            SummaryButton.SetActive(true);
         }
         handleTextColorChange("Text_AG");
     }
@@ -195,6 +217,13 @@ public class InteractionManager : MonoBehaviour
         if (initial == null)
         {
             initial = capabilities[2];
+            InitialPanel.SetActive(false);
+        }
+
+        if (visitedCapabilities == 8)
+        {
+            chosen = capabilities[2];
+            SummaryButton.SetActive(true);
         }
         handleTextColorChange("Text_BC");
 
@@ -205,6 +234,13 @@ public class InteractionManager : MonoBehaviour
         if (initial == null)
         {
             initial = capabilities[3];
+            InitialPanel.SetActive(false);
+        }
+
+        if (visitedCapabilities == 8)
+        {
+            chosen = capabilities[3];
+            SummaryButton.SetActive(true);
         }
         handleTextColorChange("Text_CL");
 
@@ -215,6 +251,13 @@ public class InteractionManager : MonoBehaviour
         if (initial == null)
         {
             initial = capabilities[4];
+            InitialPanel.SetActive(false);
+        }
+
+        if (visitedCapabilities == 8)
+        {
+            chosen = capabilities[4];
+            SummaryButton.SetActive(true);
         }
         handleTextColorChange("Text_CY");
 
@@ -225,6 +268,13 @@ public class InteractionManager : MonoBehaviour
         if (initial == null)
         {
             initial = capabilities[5];
+            InitialPanel.SetActive(false);
+        }
+
+        if (visitedCapabilities == 8)
+        {
+            chosen = capabilities[5];
+            SummaryButton.SetActive(true);
         }
         handleTextColorChange("Text_DS");
 
@@ -235,6 +285,13 @@ public class InteractionManager : MonoBehaviour
         if (initial == null)
         {
             initial = capabilities[6];
+            InitialPanel.SetActive(false);
+        }
+
+        if (visitedCapabilities == 8)
+        {
+            chosen = capabilities[6];
+            SummaryButton.SetActive(true);
         }
         handleTextColorChange("Text_OP");
 
@@ -245,6 +302,13 @@ public class InteractionManager : MonoBehaviour
         if (initial == null)
         {
             initial = capabilities[7];
+            InitialPanel.SetActive(false);
+        }
+
+        if (visitedCapabilities == 8)
+        {
+            chosen = capabilities[7];
+            SummaryButton.SetActive(true);
         }
         handleTextColorChange("Text_VR");
 
@@ -259,15 +323,18 @@ public class InteractionManager : MonoBehaviour
 
     #endregion
 
+    public void HideInitialDialog()
+    {
+        InitialDialog.SetActive(false);
+    }
+
     // Submit form will store age and gender, and hide the login screen
     public void SubmitForm()
     {
         LoginScreen.SetActive(false);
-
     }
 
-
-    // StartCoroutine(PostData());
+    //StartCoroutine(PostData());
     IEnumerator PostData()
     {
         string data = "data";
@@ -283,6 +350,7 @@ public class InteractionManager : MonoBehaviour
             }
             else
             {
+
                 Debug.Log($"Successful Post from a {selectedAgeGroup} year old {selectedGender} with inital({initial}) and chosen({chosen})");
             }
         }
@@ -573,8 +641,7 @@ public class InteractionManager : MonoBehaviour
         // once they have visited all capabilities
         if (visitedCapabilities == 8)
         {
-            // unlock view summary button
-            SummaryButton.SetActive(true);
+            SummaryPanel.SetActive(true);
         }
 
         // handle button switcher text based on showInitialData
