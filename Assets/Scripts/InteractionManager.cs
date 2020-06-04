@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 public class InteractionManager : MonoBehaviour
 {
+    public GameObject LoadingScreen;
     public GameObject LoginScreen;
     public Button SubmitButton;
     public GameObject SummaryButton;
@@ -22,12 +23,15 @@ public class InteractionManager : MonoBehaviour
     public Text panel46Text;
     public Text panel56Text;
 
+    public Color defaultColor = new Color32(255, 142, 0, 9);
+    public Color summaryColor = new Color32(255, 142, 0, 255);
+    public Color tieColor = new Color32(255, 142, 0, 150);
+
 
     #region privateMembers
 
     private int totalDataSize;
     private Color visitedTextColor = new Color32(243, 136, 50, 255);
-    private Color solidPanelColor = new Color32(255, 142, 0, 255);
     private string age = "Select Age Group";
     private string initial;
     private string chosen = "AG";
@@ -58,6 +62,8 @@ public class InteractionManager : MonoBehaviour
 
 
     private bool showInitialData = true;
+    private bool showParticipantDataTotal = false;
+    private bool showParticipantDataSummary = true;
 
     #endregion
 
@@ -134,6 +140,7 @@ public class InteractionManager : MonoBehaviour
                 maleList = octoData.all.Where(x => x.gender == "Male").ToList();
                 otherList = octoData.all.Where(x => x.gender == "Other").ToList();
                 print(octoData.all.Count + " points of Data Received");
+                LoadingScreen.SetActive(false);
             }
         }
     }
@@ -292,12 +299,17 @@ public class InteractionManager : MonoBehaviour
         // display the panel
         SummaryScreen.SetActive(true);
         FilterData();
+        RunSummaries();
     }
 
     public void ToggleDataDisplay()
     {
         showInitialData = !showInitialData;
         FilterData();
+        if (showParticipantDataSummary)
+        {
+            RunSummaries();
+        }
         dataSetText.text = showInitialData ? "Initial Interest Data Displayed" : "Chosen Interest Data Displayed";
     }
     private string HandleTextDisplay(string choice)
@@ -321,25 +333,54 @@ public class InteractionManager : MonoBehaviour
 
     private void SetStrings(string capability)
     {
+        // reset to default colors if we're not showing the summary
+        if (!showParticipantDataSummary)
+        {
+            GameObject.Find($"Female-{capability}-Panel").GetComponent<Image>().color = defaultColor;
+            GameObject.Find($"Male-{capability}-Panel").GetComponent<Image>().color = defaultColor;
+            GameObject.Find($"Other-{capability}-Panel").GetComponent<Image>().color = defaultColor;
+        }
+
         GameObject.Find($"Female-{capability}").GetComponent<Text>().text = HandleData(capability, femaleList);
         GameObject.Find($"Male-{capability}").GetComponent<Text>().text = HandleData(capability, maleList);
         GameObject.Find($"Other-{capability}").GetComponent<Text>().text = HandleData(capability, otherList);
     }
     private string HandleData(string parameter, List<Users> list)
     {
-        // run filter first on parameter
-        IEnumerable parameterQuery = list.Where(x => (showInitialData ? x.initial : x.chosen) == parameter);
-
-        if (parameterQuery != null)
+        // if we dont want to show  data total and data summary, then run filters
+        if (!showParticipantDataTotal && !showParticipantDataSummary)
         {
-            List<Users> parameterList = list.Where(x => (showInitialData ? x.initial : x.chosen) == parameter).ToList();
-            print("parameterList -> " + parameterList + "showInitialData -> " + showInitialData);
-            // now run filter on age group
-            IEnumerable ageQuery = parameterList.Where(y => y.age == viewAgeGroup);
+            // run filter first on parameter
+            IEnumerable parameterQuery = list.Where(x => (showInitialData ? x.initial : x.chosen) == parameter);
 
-            if (ageQuery != null)
+            if (parameterQuery != null)
             {
-                string newString = parameterList.Where(y => y.age == viewAgeGroup).ToList().Count.ToString();
+                List<Users> parameterList = list.Where(x => (showInitialData ? x.initial : x.chosen) == parameter).ToList();
+                // now run filter on age group
+                IEnumerable ageQuery = parameterList.Where(y => y.age == viewAgeGroup);
+
+                if (ageQuery != null)
+                {
+                    string newString = parameterList.Where(y => y.age == viewAgeGroup).ToList().Count.ToString();
+                    if (newString == "0")
+                    {
+                        return "";
+                    }
+                    return newString;
+                }
+                return "";
+            }
+            return "";
+        }
+        else
+        {
+            // run filter first on parameter
+            IEnumerable parameterQuery = list.Where(x => (showInitialData ? x.initial : x.chosen) == parameter);
+
+            if (parameterQuery != null)
+            {
+                string newString = list.Where(x => (showInitialData ? x.initial : x.chosen) == parameter).ToList().Count.ToString();
+
                 if (newString == "0")
                 {
                     return "";
@@ -347,16 +388,15 @@ public class InteractionManager : MonoBehaviour
                 return newString;
             }
             return "";
-
         }
-
-        return "";
     }
 
 
     public void SetAge25()
     {
         viewAgeGroup = ageGroups[0];
+        showParticipantDataTotal = false;
+        showParticipantDataSummary = false;
         FilterData();
         // display proper panel, and turn off the others
         panel25.SetActive(true);
@@ -369,6 +409,8 @@ public class InteractionManager : MonoBehaviour
     public void SetAge26()
     {
         viewAgeGroup = ageGroups[1];
+        showParticipantDataTotal = false;
+        showParticipantDataSummary = false;
         FilterData();
         // display proper panel, and turn off the others
         panel25.SetActive(false);
@@ -381,6 +423,8 @@ public class InteractionManager : MonoBehaviour
     public void SetAge36()
     {
         viewAgeGroup = ageGroups[2];
+        showParticipantDataTotal = false;
+        showParticipantDataSummary = false;
         FilterData();
         // display proper panel, and turn off the others
         panel25.SetActive(false);
@@ -393,6 +437,8 @@ public class InteractionManager : MonoBehaviour
     public void SetAge46()
     {
         viewAgeGroup = ageGroups[3];
+        showParticipantDataTotal = false;
+        showParticipantDataSummary = false;
         FilterData();
         // display proper panel, and turn off the others
         panel25.SetActive(false);
@@ -405,6 +451,8 @@ public class InteractionManager : MonoBehaviour
     public void SetAge56()
     {
         viewAgeGroup = ageGroups[4];
+        showParticipantDataTotal = false;
+        showParticipantDataSummary = false;
         FilterData();
         // display proper panel, and turn off the others
         panel25.SetActive(false);
@@ -414,6 +462,102 @@ public class InteractionManager : MonoBehaviour
         panel56.SetActive(true);
     }
 
+
+    public void ShowParticipantData()
+    {
+        showParticipantDataTotal = true;
+        showParticipantDataSummary = false;
+        FilterData();
+    }
+
+    public void ShowParticipantSummary()
+    {
+        showParticipantDataTotal = false;
+        showParticipantDataSummary = true;
+        FilterData();
+        RunSummaries();
+
+
+    }
+
+    private void RunSummaries()
+    {
+        RunSummaryColor("AI");
+        RunSummaryColor("AG");
+        RunSummaryColor("BC");
+        RunSummaryColor("CL");
+        RunSummaryColor("CY");
+        RunSummaryColor("DS");
+        RunSummaryColor("OP");
+        RunSummaryColor("VR");
+    }
+    private void RunSummaryColor(string capability)
+    {
+        // first we need to store and covert the value of each gender
+        int femaleValue, maleValue, otherValue;
+        int.TryParse(GameObject.Find($"Female-{capability}").GetComponent<Text>().text, out femaleValue);
+        int.TryParse(GameObject.Find($"Male-{capability}").GetComponent<Text>().text, out maleValue);
+        int.TryParse(GameObject.Find($"Other-{capability}").GetComponent<Text>().text, out otherValue);
+
+        HandleComparisons(femaleValue, maleValue, otherValue, capability);
+    }
+
+    private void HandleComparisons(int femaleValue, int maleValue, int otherValue, string capability)
+    {
+        bool femaleWon = (femaleValue > maleValue) && (femaleValue > otherValue);
+        bool maleWon = (maleValue > femaleValue) && (maleValue > otherValue);
+        bool otherWon = (otherValue > maleValue) && (otherValue > femaleValue);
+
+        // now compare them, greatest value wins
+        if (femaleWon)
+        {
+            // change to solid color for the winner
+            GameObject.Find($"Female-{capability}-Panel").GetComponent<Image>().color = summaryColor;
+            // and erase the text for the losers
+            GameObject.Find($"Male-{capability}").GetComponent<Text>().text = "";
+            GameObject.Find($"Other-{capability}").GetComponent<Text>().text = "";
+        }
+        else if (maleWon)
+        {
+            GameObject.Find($"Male-{capability}-Panel").GetComponent<Image>().color = summaryColor;
+            GameObject.Find($"Female-{capability}").GetComponent<Text>().text = "";
+            GameObject.Find($"Other-{capability}").GetComponent<Text>().text = "";
+        }
+        else if (otherWon)
+        {
+            GameObject.Find($"Other-{capability}-Panel").GetComponent<Image>().color = summaryColor;
+            GameObject.Find($"Male-{capability}").GetComponent<Text>().text = "";
+            GameObject.Find($"Female-{capability}").GetComponent<Text>().text = "";
+        }
+        else
+        {
+            // at this point there wasn't a clear winner, which means there was a tie somewhere
+            if (femaleValue == maleValue)
+            {
+                GameObject.Find($"Female-{capability}-Panel").GetComponent<Image>().color = tieColor;
+                GameObject.Find($"Male-{capability}-Panel").GetComponent<Image>().color = tieColor;
+                GameObject.Find($"Female-{capability}").GetComponent<Text>().text = "";
+                GameObject.Find($"Male-{capability}").GetComponent<Text>().text = "";
+            }
+
+            if (femaleValue == otherValue)
+            {
+                GameObject.Find($"Female-{capability}-Panel").GetComponent<Image>().color = tieColor;
+                GameObject.Find($"Other-{capability}-Panel").GetComponent<Image>().color = tieColor;
+                GameObject.Find($"Female-{capability}").GetComponent<Text>().text = "";
+                GameObject.Find($"Other-{capability}").GetComponent<Text>().text = "";
+            }
+
+            if (otherValue == maleValue)
+            {
+                GameObject.Find($"Other-{capability}-Panel").GetComponent<Image>().color = tieColor;
+                GameObject.Find($"Male-{capability}-Panel").GetComponent<Image>().color = tieColor;
+                GameObject.Find($"Other-{capability}").GetComponent<Text>().text = "";
+                GameObject.Find($"Male-{capability}").GetComponent<Text>().text = "";
+            }
+        }
+
+    }
     // Update is called once per frame
     void Update()
     {
