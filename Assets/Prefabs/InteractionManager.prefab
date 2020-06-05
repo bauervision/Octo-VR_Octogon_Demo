@@ -45,9 +45,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LoadingScreen: {fileID: 0}
   LoginScreen: {fileID: 0}
+  InitialDialog: {fileID: 0}
+  InitialPanel: {fileID: 0}
+  NewLoader: {fileID: 0}
   SubmitButton: {fileID: 0}
   SummaryButton: {fileID: 0}
   SummaryScreen: {fileID: 0}
+  SummaryPanel: {fileID: 0}
+  OverallSummary: {fileID: 0}
+  ParticipantSummary: {fileID: 0}
   totalDataText: {fileID: 0}
   initialText: {fileID: 0}
   chosenText: {fileID: 0}

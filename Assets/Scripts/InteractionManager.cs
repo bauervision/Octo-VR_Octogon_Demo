@@ -12,12 +12,15 @@ public class InteractionManager : MonoBehaviour
     public GameObject LoginScreen;
     public GameObject InitialDialog;
     public GameObject InitialPanel;
+    public GameObject NewLoader;
 
 
     public Button SubmitButton;
     public GameObject SummaryButton;
     public GameObject SummaryScreen;
     public GameObject SummaryPanel;
+    public Button OverallSummary;
+    public Button ParticipantSummary;
 
     public Text totalDataText;
     public Text initialText;
@@ -121,6 +124,9 @@ public class InteractionManager : MonoBehaviour
         SummaryScreen.SetActive(false);
         SummaryButton.SetActive(false);
         SummaryPanel.SetActive(false);
+        NewLoader.SetActive(false);
+
+
     }
     IEnumerator GetRequest(string url)
     {
@@ -145,6 +151,22 @@ public class InteractionManager : MonoBehaviour
                 maleList = octoData.all.Where(x => x.gender == "Male").ToList();
                 otherList = octoData.all.Where(x => x.gender == "Other").ToList();
                 print(octoData.all.Count + " points of Data Received");
+
+                // when we run this fetch the second time...
+                if (visitedCapabilities == 8)
+                {
+                    NewLoader.SetActive(false);
+                    // set general summary
+                    totalDataSize = octoData.all.Count;
+                    totalDataText.text = totalDataSize.ToString();
+                    initialText.text = HandleTextDisplay(initial);
+                    chosenText.text = HandleTextDisplay(chosen);
+                    // display the panel
+                    SummaryScreen.SetActive(true);
+                    OverallSummary.Select();
+                    FilterData();
+                    RunSummaries();
+                }
                 LoadingScreen.SetActive(false);
             }
         }
@@ -334,7 +356,7 @@ public class InteractionManager : MonoBehaviour
         LoginScreen.SetActive(false);
     }
 
-    //StartCoroutine(PostData());
+    //
     IEnumerator PostData()
     {
         string data = "data";
@@ -350,8 +372,8 @@ public class InteractionManager : MonoBehaviour
             }
             else
             {
-
                 Debug.Log($"Successful Post from a {selectedAgeGroup} year old {selectedGender} with inital({initial}) and chosen({chosen})");
+                StartCoroutine(GetRequest("https://us-central1-octo-ar-demo.cloudfunctions.net/getUsers"));
             }
         }
     }
@@ -359,15 +381,9 @@ public class InteractionManager : MonoBehaviour
 
     public void ShowSummary()
     {
-        // general summary
-        totalDataSize = octoData.all.Count;
-        totalDataText.text = totalDataSize.ToString();
-        initialText.text = HandleTextDisplay(initial);
-        chosenText.text = HandleTextDisplay(chosen);
-        // display the panel
-        SummaryScreen.SetActive(true);
-        FilterData();
-        RunSummaries();
+        SummaryButton.SetActive(false);
+        NewLoader.SetActive(true);
+        StartCoroutine(PostData());
     }
 
     public void ToggleDataDisplay()
@@ -401,13 +417,10 @@ public class InteractionManager : MonoBehaviour
 
     private void SetStrings(string capability)
     {
-        // reset to default colors if we're not showing the summary
-        if (!showParticipantDataSummary)
-        {
-            GameObject.Find($"Female-{capability}-Panel").GetComponent<Image>().color = defaultColor;
-            GameObject.Find($"Male-{capability}-Panel").GetComponent<Image>().color = defaultColor;
-            GameObject.Find($"Other-{capability}-Panel").GetComponent<Image>().color = defaultColor;
-        }
+        // reset to default colors before doing anything
+        GameObject.Find($"Female-{capability}-Panel").GetComponent<Image>().color = defaultColor;
+        GameObject.Find($"Male-{capability}-Panel").GetComponent<Image>().color = defaultColor;
+        GameObject.Find($"Other-{capability}-Panel").GetComponent<Image>().color = defaultColor;
 
         GameObject.Find($"Female-{capability}").GetComponent<Text>().text = HandleData(capability, femaleList);
         GameObject.Find($"Male-{capability}").GetComponent<Text>().text = HandleData(capability, maleList);
@@ -626,6 +639,13 @@ public class InteractionManager : MonoBehaviour
         }
 
     }
+
+
+    public void Exit()
+    {
+        Application.Quit();
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -650,6 +670,16 @@ public class InteractionManager : MonoBehaviour
         panel36Text.text = showInitialData ? "Initial Interest" : "Chosen Interest";
         panel46Text.text = showInitialData ? "Initial Interest" : "Chosen Interest";
         panel56Text.text = showInitialData ? "Initial Interest" : "Chosen Interest";
+
+        if (showParticipantDataSummary && SummaryScreen.activeInHierarchy)
+        {
+            OverallSummary.Select();
+        }
+
+        if (showParticipantDataTotal && SummaryScreen.activeInHierarchy)
+        {
+            ParticipantSummary.Select();
+        }
     }
 
 }
