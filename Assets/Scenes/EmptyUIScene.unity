@@ -127,19 +127,13 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 4736136885760216979}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &92707682 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 92707682, guid: f93674e1e08660a48a583ce438331cbf,
-    type: 3}
-  m_PrefabInstance: {fileID: 4736136885760216979}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &92707684 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 92707684, guid: f93674e1e08660a48a583ce438331cbf,
     type: 3}
   m_PrefabInstance: {fileID: 4736136885760216979}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 92707682}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
@@ -169,6 +163,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &474232738 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8983386873677239729, guid: f93674e1e08660a48a583ce438331cbf,
+    type: 3}
+  m_PrefabInstance: {fileID: 4736136885760216979}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &820105134 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 619845205038868652, guid: f93674e1e08660a48a583ce438331cbf,
@@ -857,6 +857,21 @@ PrefabInstance:
       objectReference: {fileID: 63944669}
     - target: {fileID: 7189338317164544113, guid: ad3eaf1d2f6449b4a81386e5cc7e17c3,
         type: 3}
+      propertyPath: InitialDialog
+      value: 
+      objectReference: {fileID: 4736136885760216980}
+    - target: {fileID: 7189338317164544113, guid: ad3eaf1d2f6449b4a81386e5cc7e17c3,
+        type: 3}
+      propertyPath: InitialPanel
+      value: 
+      objectReference: {fileID: 4736136885760216981}
+    - target: {fileID: 7189338317164544113, guid: ad3eaf1d2f6449b4a81386e5cc7e17c3,
+        type: 3}
+      propertyPath: NewLoader
+      value: 
+      objectReference: {fileID: 474232738}
+    - target: {fileID: 7189338317164544113, guid: ad3eaf1d2f6449b4a81386e5cc7e17c3,
+        type: 3}
       propertyPath: SubmitButton
       value: 
       objectReference: {fileID: 92707684}
@@ -870,6 +885,21 @@ PrefabInstance:
       propertyPath: SummaryScreen
       value: 
       objectReference: {fileID: 1435262891}
+    - target: {fileID: 7189338317164544113, guid: ad3eaf1d2f6449b4a81386e5cc7e17c3,
+        type: 3}
+      propertyPath: SummaryPanel
+      value: 
+      objectReference: {fileID: 1167756448}
+    - target: {fileID: 7189338317164544113, guid: ad3eaf1d2f6449b4a81386e5cc7e17c3,
+        type: 3}
+      propertyPath: OverallSummary
+      value: 
+      objectReference: {fileID: 1720748944}
+    - target: {fileID: 7189338317164544113, guid: ad3eaf1d2f6449b4a81386e5cc7e17c3,
+        type: 3}
+      propertyPath: ParticipantSummary
+      value: 
+      objectReference: {fileID: 1107286592}
     - target: {fileID: 7189338317164544113, guid: ad3eaf1d2f6449b4a81386e5cc7e17c3,
         type: 3}
       propertyPath: totalDataText
@@ -910,41 +940,6 @@ PrefabInstance:
       propertyPath: panel56Text
       value: 
       objectReference: {fileID: 370551154}
-    - target: {fileID: 7189338317164544113, guid: ad3eaf1d2f6449b4a81386e5cc7e17c3,
-        type: 3}
-      propertyPath: formSpinner
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7189338317164544113, guid: ad3eaf1d2f6449b4a81386e5cc7e17c3,
-        type: 3}
-      propertyPath: SummaryButton_GO
-      value: 
-      objectReference: {fileID: 92707682}
-    - target: {fileID: 7189338317164544113, guid: ad3eaf1d2f6449b4a81386e5cc7e17c3,
-        type: 3}
-      propertyPath: InitialDialog
-      value: 
-      objectReference: {fileID: 4736136885760216980}
-    - target: {fileID: 7189338317164544113, guid: ad3eaf1d2f6449b4a81386e5cc7e17c3,
-        type: 3}
-      propertyPath: SummaryPanel
-      value: 
-      objectReference: {fileID: 1167756448}
-    - target: {fileID: 7189338317164544113, guid: ad3eaf1d2f6449b4a81386e5cc7e17c3,
-        type: 3}
-      propertyPath: InitialPanel
-      value: 
-      objectReference: {fileID: 4736136885760216981}
-    - target: {fileID: 7189338317164544113, guid: ad3eaf1d2f6449b4a81386e5cc7e17c3,
-        type: 3}
-      propertyPath: OverallSummary
-      value: 
-      objectReference: {fileID: 1720748944}
-    - target: {fileID: 7189338317164544113, guid: ad3eaf1d2f6449b4a81386e5cc7e17c3,
-        type: 3}
-      propertyPath: ParticipantSummary
-      value: 
-      objectReference: {fileID: 1107286592}
     - target: {fileID: 7189338317164544114, guid: ad3eaf1d2f6449b4a81386e5cc7e17c3,
         type: 3}
       propertyPath: m_Name
