@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using UnityEngine.Playables;
 
 
 public class InteractionManager : MonoBehaviour
@@ -13,6 +14,13 @@ public class InteractionManager : MonoBehaviour
     public GameObject InitialDialog;
     public GameObject InitialPanel;
     public GameObject NewLoader;
+    public PlayableDirector timeline;
+    public GameObject MainButtons;
+    public GameObject RoomButtons;
+    public GameObject RoomSprite;
+    public GameObject RoomTitle;
+    public GameObject RoomPOC;
+
 
 
     public Button SubmitButton;
@@ -74,6 +82,8 @@ public class InteractionManager : MonoBehaviour
     private bool showParticipantDataTotal = false;
     private bool showParticipantDataSummary = true;
 
+    private bool TimeLineIsPlaying = false;
+
     #endregion
 
     /*  =============== JSON related =====================  */
@@ -103,6 +113,7 @@ public class InteractionManager : MonoBehaviour
         StartCoroutine(GetRequest("https://us-central1-octo-ar-demo.cloudfunctions.net/getUsers"));
         SubmitButton.interactable = false;
         InitializeUI();
+
     }
 
     private void InitializeUI()
@@ -125,6 +136,7 @@ public class InteractionManager : MonoBehaviour
         SummaryButton.SetActive(false);
         SummaryPanel.SetActive(false);
         NewLoader.SetActive(false);
+        RoomButtons.SetActive(false);
 
 
     }
@@ -186,21 +198,28 @@ public class InteractionManager : MonoBehaviour
     }
 
 
-    #region capabilitySetters
+
 
     private void handleTextColorChange(string textObj)
     {
         GameObject text = GameObject.Find(textObj);
-        if (text.GetComponent<Text>().color != visitedTextColor)
+        if (text)
         {
-            text.GetComponent<Text>().color = visitedTextColor;
-            visitedCapabilities++;
+            if (text.GetComponent<Text>().color != visitedTextColor)
+            {
+                text.GetComponent<Text>().color = visitedTextColor;
+                visitedCapabilities++;
 
+            }
         }
 
+
     }
+
+    #region IconSetters
     public void Set_AI()
     {
+        PlayTimeline();
         if (initial == null)
         {
             initial = capabilities[0];
@@ -219,6 +238,7 @@ public class InteractionManager : MonoBehaviour
 
     public void Set_AG()
     {
+        PlayTimeline();
         if (initial == null)
         {
             initial = capabilities[1];
@@ -236,6 +256,7 @@ public class InteractionManager : MonoBehaviour
 
     public void Set_BC()
     {
+        PlayTimeline();
         if (initial == null)
         {
             initial = capabilities[2];
@@ -253,6 +274,7 @@ public class InteractionManager : MonoBehaviour
 
     public void Set_CL()
     {
+        PlayTimeline();
         if (initial == null)
         {
             initial = capabilities[3];
@@ -270,6 +292,7 @@ public class InteractionManager : MonoBehaviour
 
     public void Set_CY()
     {
+        PlayTimeline();
         if (initial == null)
         {
             initial = capabilities[4];
@@ -287,6 +310,7 @@ public class InteractionManager : MonoBehaviour
 
     public void Set_DS()
     {
+        PlayTimeline();
         if (initial == null)
         {
             initial = capabilities[5];
@@ -304,6 +328,7 @@ public class InteractionManager : MonoBehaviour
 
     public void Set_OP()
     {
+        PlayTimeline();
         if (initial == null)
         {
             initial = capabilities[6];
@@ -321,6 +346,7 @@ public class InteractionManager : MonoBehaviour
 
     public void Set_VR()
     {
+        PlayTimeline();
         if (initial == null)
         {
             initial = capabilities[7];
@@ -336,8 +362,10 @@ public class InteractionManager : MonoBehaviour
 
     }
 
-
     #endregion
+
+
+
     public void SetChosen(string chosenInput)
     {
         chosen = chosenInput;
@@ -396,6 +424,8 @@ public class InteractionManager : MonoBehaviour
         }
         dataSetText.text = showInitialData ? "Initial Interest Data Displayed" : "Chosen Interest Data Displayed";
     }
+
+
     private string HandleTextDisplay(string choice)
     {
         // first grab the index within the shortened array
@@ -473,6 +503,7 @@ public class InteractionManager : MonoBehaviour
     }
 
 
+    #region Set_DataFilters_Summary
     public void SetAge25()
     {
         viewAgeGroup = ageGroups[0];
@@ -561,6 +592,8 @@ public class InteractionManager : MonoBehaviour
 
     }
 
+    #endregion
+
     private void RunSummaries()
     {
         RunSummaryColor("AI");
@@ -646,7 +679,40 @@ public class InteractionManager : MonoBehaviour
         Application.Quit();
     }
 
-    // Update is called once per frame
+
+    private void PlayTimeline()
+    {
+        print("Playing timeline?");
+        // if the main camera has been disabled, then we've already gone into the rooom once
+        timeline.Play();
+        TimeLineIsPlaying = true;
+        HideMainButtons();
+    }
+
+
+    private void HideMainButtons()
+    {
+
+        MainButtons.SetActive(false);
+    }
+
+
+
+    public void TimelineComplete()
+    {
+        TimeLineIsPlaying = false;
+        RoomButtons.SetActive(true);
+    }
+
+    public void ResetCamera()
+    {
+        timeline.time = 0;
+        timeline.RebuildGraph();
+        timeline.Evaluate();
+        RoomButtons.SetActive(false);
+        MainButtons.SetActive(true);
+    }
+
     void Update()
     {
         bool validGender = ((selectedGender != "Select Gender") && (selectedGender != null));
@@ -680,6 +746,10 @@ public class InteractionManager : MonoBehaviour
         {
             ParticipantSummary.Select();
         }
+
+
+
+
     }
 
 }

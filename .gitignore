@@ -7,9 +7,12 @@
 [Ww]indows/
 Assets/AssetStoreTools*
 EffectExamples/
-Allegorithmic/Plugins*
+Allegorithmic/
 Sonic Ether/
 TextMesh Pro/
+_Creepy_Cat/
+
+Lightmap*
 
 # Visual Studio 2015 cache directory
 /.vs/
