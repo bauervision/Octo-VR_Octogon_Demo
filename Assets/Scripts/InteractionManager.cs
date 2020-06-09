@@ -18,8 +18,17 @@ public class InteractionManager : MonoBehaviour
     public GameObject MainButtons;
     public GameObject RoomButtons;
     public GameObject RoomSprite;
-    public GameObject RoomTitle;
+    public Text RoomTitle;
     public GameObject RoomPOC;
+
+    public Sprite AI_sprite;
+    public Sprite AG_sprite;
+    public Sprite BC_sprite;
+    public Sprite CL_sprite;
+    public Sprite CY_sprite;
+    public Sprite DS_sprite;
+    public Sprite OP_sprite;
+    public Sprite VR_sprite;
 
 
 
@@ -76,6 +85,8 @@ public class InteractionManager : MonoBehaviour
     private GameObject panel56;
 
     private Text dataSetText;
+
+    private string currentTitle;
 
 
     private bool showInitialData = true;
@@ -202,12 +213,12 @@ public class InteractionManager : MonoBehaviour
 
     private void handleTextColorChange(string textObj)
     {
-        GameObject text = GameObject.Find(textObj);
-        if (text)
+        Text text = GameObject.Find(textObj).GetComponent<Text>();
+        if (text != null)
         {
-            if (text.GetComponent<Text>().color != visitedTextColor)
+            if (text.color != visitedTextColor)
             {
-                text.GetComponent<Text>().color = visitedTextColor;
+                text.color = visitedTextColor;
                 visitedCapabilities++;
 
             }
@@ -217,9 +228,22 @@ public class InteractionManager : MonoBehaviour
     }
 
     #region IconSetters
+
+    private void handleIconSwap(Sprite sprite)
+    {
+        RoomSprite.GetComponent<SpriteRenderer>().sprite = sprite;
+    }
+
+
+    private void handleTitleChange(string newTitle)
+    {
+        currentTitle = newTitle;
+    }
+
+
     public void Set_AI()
     {
-        PlayTimeline();
+
         if (initial == null)
         {
             initial = capabilities[0];
@@ -234,11 +258,14 @@ public class InteractionManager : MonoBehaviour
         }
 
         handleTextColorChange("Text_AI");
+        handleIconSwap(AI_sprite);
+        handleTitleChange(capabilityStrings[0]);
+        PlayTimeline();
     }
 
     public void Set_AG()
     {
-        PlayTimeline();
+
         if (initial == null)
         {
             initial = capabilities[1];
@@ -252,11 +279,14 @@ public class InteractionManager : MonoBehaviour
             SummaryButton.SetActive(true);
         }
         handleTextColorChange("Text_AG");
+        handleIconSwap(AG_sprite);
+        handleTitleChange(capabilityStrings[1]);
+        PlayTimeline();
     }
 
     public void Set_BC()
     {
-        PlayTimeline();
+
         if (initial == null)
         {
             initial = capabilities[2];
@@ -269,12 +299,14 @@ public class InteractionManager : MonoBehaviour
             SummaryButton.SetActive(true);
         }
         handleTextColorChange("Text_BC");
-
+        handleIconSwap(BC_sprite);
+        handleTitleChange(capabilityStrings[2]);
+        PlayTimeline();
     }
 
     public void Set_CL()
     {
-        PlayTimeline();
+
         if (initial == null)
         {
             initial = capabilities[3];
@@ -287,12 +319,14 @@ public class InteractionManager : MonoBehaviour
             SummaryButton.SetActive(true);
         }
         handleTextColorChange("Text_CL");
-
+        handleIconSwap(CL_sprite);
+        handleTitleChange(capabilityStrings[3]);
+        PlayTimeline();
     }
 
     public void Set_CY()
     {
-        PlayTimeline();
+
         if (initial == null)
         {
             initial = capabilities[4];
@@ -305,12 +339,14 @@ public class InteractionManager : MonoBehaviour
             SummaryButton.SetActive(true);
         }
         handleTextColorChange("Text_CY");
-
+        handleIconSwap(CY_sprite);
+        handleTitleChange(capabilityStrings[4]);
+        PlayTimeline();
     }
 
     public void Set_DS()
     {
-        PlayTimeline();
+
         if (initial == null)
         {
             initial = capabilities[5];
@@ -323,12 +359,14 @@ public class InteractionManager : MonoBehaviour
             SummaryButton.SetActive(true);
         }
         handleTextColorChange("Text_DS");
-
+        handleIconSwap(DS_sprite);
+        handleTitleChange(capabilityStrings[5]);
+        PlayTimeline();
     }
 
     public void Set_OP()
     {
-        PlayTimeline();
+
         if (initial == null)
         {
             initial = capabilities[6];
@@ -341,12 +379,14 @@ public class InteractionManager : MonoBehaviour
             SummaryButton.SetActive(true);
         }
         handleTextColorChange("Text_OP");
-
+        handleIconSwap(OP_sprite);
+        handleTitleChange(capabilityStrings[6]);
+        PlayTimeline();
     }
 
     public void Set_VR()
     {
-        PlayTimeline();
+
         if (initial == null)
         {
             initial = capabilities[7];
@@ -359,7 +399,9 @@ public class InteractionManager : MonoBehaviour
             SummaryButton.SetActive(true);
         }
         handleTextColorChange("Text_VR");
-
+        handleIconSwap(VR_sprite);
+        handleTitleChange(capabilityStrings[7]);
+        PlayTimeline();
     }
 
     #endregion
@@ -682,8 +724,6 @@ public class InteractionManager : MonoBehaviour
 
     private void PlayTimeline()
     {
-        print("Playing timeline?");
-        // if the main camera has been disabled, then we've already gone into the rooom once
         timeline.Play();
         TimeLineIsPlaying = true;
         HideMainButtons();
@@ -702,6 +742,7 @@ public class InteractionManager : MonoBehaviour
     {
         TimeLineIsPlaying = false;
         RoomButtons.SetActive(true);
+        RoomTitle.text = currentTitle;
     }
 
     public void ResetCamera()
