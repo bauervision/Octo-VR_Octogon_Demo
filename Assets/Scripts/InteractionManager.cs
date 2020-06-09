@@ -752,6 +752,12 @@ public class InteractionManager : MonoBehaviour
         timeline.Evaluate();
         RoomButtons.SetActive(false);
         MainButtons.SetActive(true);
+
+        if (visitedCapabilities == 8)
+        {
+            SummaryPanel.SetActive(true);
+        }
+
     }
 
     void Update()
@@ -766,10 +772,7 @@ public class InteractionManager : MonoBehaviour
         }
 
         // once they have visited all capabilities
-        if (visitedCapabilities == 8)
-        {
-            SummaryPanel.SetActive(true);
-        }
+
 
         // handle button switcher text based on showInitialData
         panel25Text.text = showInitialData ? "Initial Interest" : "Chosen Interest";
