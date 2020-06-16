@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/EmptyUIScene.unity
-    guid: 415ee2740b5f0394585f0f5a9cc66492
+    path: Assets/Scenes/Octo_VR_Demo.unity
+    guid: c82612a039104bb43b7aee9d432cc4dc
   m_configObjects: {}

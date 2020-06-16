@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using UnityEngine.Playables;
+using System.Runtime.InteropServices;
 
 
 public class InteractionManager : MonoBehaviour
@@ -29,6 +30,9 @@ public class InteractionManager : MonoBehaviour
     public Sprite DS_sprite;
     public Sprite OP_sprite;
     public Sprite VR_sprite;
+
+    public GameObject UI_initial_sprite;
+    public GameObject UI_chosen_sprite;
 
 
 
@@ -55,6 +59,12 @@ public class InteractionManager : MonoBehaviour
 
 
     #region privateMembers
+
+    [DllImport("__Internal")]
+    private static extern void Select(int side);
+
+    [DllImport("__Internal")]
+    private static extern void SendData(int side);
 
     private int totalDataSize;
     private Color visitedTextColor = new Color32(243, 136, 50, 255);
@@ -87,6 +97,9 @@ public class InteractionManager : MonoBehaviour
     private Text dataSetText;
 
     private string currentTitle;
+
+    private Sprite chosenSprite;
+    private Sprite initialSprite;
 
 
     private bool showInitialData = true;
@@ -189,6 +202,9 @@ public class InteractionManager : MonoBehaviour
                     OverallSummary.Select();
                     FilterData();
                     RunSummaries();
+
+                    UI_chosen_sprite.GetComponent<Image>().sprite = chosenSprite;
+                    UI_initial_sprite.GetComponent<Image>().sprite = initialSprite;
                 }
                 LoadingScreen.SetActive(false);
             }
@@ -247,20 +263,26 @@ public class InteractionManager : MonoBehaviour
         if (initial == null)
         {
             initial = capabilities[0];
+            initialSprite = AI_sprite;
             InitialPanel.SetActive(false);
         }
 
         if (visitedCapabilities == 8)
         {
             chosen = capabilities[0];
+            chosenSprite = AI_sprite;
             // unlock view summary button
             SummaryButton.SetActive(true);
+            SummaryPanel.SetActive(false);
+            HideMainButtons();
         }
-
-        handleTextColorChange("Text_AI");
-        handleIconSwap(AI_sprite);
-        handleTitleChange(capabilityStrings[0]);
-        PlayTimeline();
+        else
+        {
+            handleTextColorChange("Text_AI");
+            handleIconSwap(AI_sprite);
+            handleTitleChange(capabilityStrings[0]);
+            PlayTimeline();
+        }
     }
 
     public void Set_AG()
@@ -269,19 +291,26 @@ public class InteractionManager : MonoBehaviour
         if (initial == null)
         {
             initial = capabilities[1];
+            initialSprite = AG_sprite;
             InitialPanel.SetActive(false);
         }
 
         if (visitedCapabilities == 8)
         {
             chosen = capabilities[1];
+            chosenSprite = AG_sprite;
             // unlock view summary button
             SummaryButton.SetActive(true);
+            SummaryPanel.SetActive(false);
+            HideMainButtons();
         }
-        handleTextColorChange("Text_AG");
-        handleIconSwap(AG_sprite);
-        handleTitleChange(capabilityStrings[1]);
-        PlayTimeline();
+        else
+        {
+            handleTextColorChange("Text_AG");
+            handleIconSwap(AG_sprite);
+            handleTitleChange(capabilityStrings[1]);
+            PlayTimeline();
+        }
     }
 
     public void Set_BC()
@@ -290,18 +319,25 @@ public class InteractionManager : MonoBehaviour
         if (initial == null)
         {
             initial = capabilities[2];
+            initialSprite = BC_sprite;
             InitialPanel.SetActive(false);
         }
 
         if (visitedCapabilities == 8)
         {
             chosen = capabilities[2];
+            chosenSprite = BC_sprite;
             SummaryButton.SetActive(true);
+            SummaryPanel.SetActive(false);
+            HideMainButtons();
         }
-        handleTextColorChange("Text_BC");
-        handleIconSwap(BC_sprite);
-        handleTitleChange(capabilityStrings[2]);
-        PlayTimeline();
+        else
+        {
+            handleTextColorChange("Text_BC");
+            handleIconSwap(BC_sprite);
+            handleTitleChange(capabilityStrings[2]);
+            PlayTimeline();
+        }
     }
 
     public void Set_CL()
@@ -310,18 +346,25 @@ public class InteractionManager : MonoBehaviour
         if (initial == null)
         {
             initial = capabilities[3];
+            initialSprite = CL_sprite;
             InitialPanel.SetActive(false);
         }
 
         if (visitedCapabilities == 8)
         {
             chosen = capabilities[3];
+            chosenSprite = CL_sprite;
             SummaryButton.SetActive(true);
+            SummaryPanel.SetActive(false);
+            HideMainButtons();
         }
-        handleTextColorChange("Text_CL");
-        handleIconSwap(CL_sprite);
-        handleTitleChange(capabilityStrings[3]);
-        PlayTimeline();
+        else
+        {
+            handleTextColorChange("Text_CL");
+            handleIconSwap(CL_sprite);
+            handleTitleChange(capabilityStrings[3]);
+            PlayTimeline();
+        }
     }
 
     public void Set_CY()
@@ -330,18 +373,25 @@ public class InteractionManager : MonoBehaviour
         if (initial == null)
         {
             initial = capabilities[4];
+            initialSprite = CY_sprite;
             InitialPanel.SetActive(false);
         }
 
         if (visitedCapabilities == 8)
         {
             chosen = capabilities[4];
+            chosenSprite = CY_sprite;
             SummaryButton.SetActive(true);
+            SummaryPanel.SetActive(false);
+            HideMainButtons();
         }
-        handleTextColorChange("Text_CY");
-        handleIconSwap(CY_sprite);
-        handleTitleChange(capabilityStrings[4]);
-        PlayTimeline();
+        else
+        {
+            handleTextColorChange("Text_CY");
+            handleIconSwap(CY_sprite);
+            handleTitleChange(capabilityStrings[4]);
+            PlayTimeline();
+        }
     }
 
     public void Set_DS()
@@ -350,18 +400,25 @@ public class InteractionManager : MonoBehaviour
         if (initial == null)
         {
             initial = capabilities[5];
+            initialSprite = DS_sprite;
             InitialPanel.SetActive(false);
         }
 
         if (visitedCapabilities == 8)
         {
             chosen = capabilities[5];
+            chosenSprite = DS_sprite;
             SummaryButton.SetActive(true);
+            SummaryPanel.SetActive(false);
+            HideMainButtons();
         }
-        handleTextColorChange("Text_DS");
-        handleIconSwap(DS_sprite);
-        handleTitleChange(capabilityStrings[5]);
-        PlayTimeline();
+        else
+        {
+            handleTextColorChange("Text_DS");
+            handleIconSwap(DS_sprite);
+            handleTitleChange(capabilityStrings[5]);
+            PlayTimeline();
+        }
     }
 
     public void Set_OP()
@@ -370,18 +427,25 @@ public class InteractionManager : MonoBehaviour
         if (initial == null)
         {
             initial = capabilities[6];
+            initialSprite = OP_sprite;
             InitialPanel.SetActive(false);
         }
 
         if (visitedCapabilities == 8)
         {
             chosen = capabilities[6];
+            chosenSprite = OP_sprite;
             SummaryButton.SetActive(true);
+            SummaryPanel.SetActive(false);
+            HideMainButtons();
         }
-        handleTextColorChange("Text_OP");
-        handleIconSwap(OP_sprite);
-        handleTitleChange(capabilityStrings[6]);
-        PlayTimeline();
+        else
+        {
+            handleTextColorChange("Text_OP");
+            handleIconSwap(OP_sprite);
+            handleTitleChange(capabilityStrings[6]);
+            PlayTimeline();
+        }
     }
 
     public void Set_VR()
@@ -390,18 +454,25 @@ public class InteractionManager : MonoBehaviour
         if (initial == null)
         {
             initial = capabilities[7];
+            initialSprite = VR_sprite;
             InitialPanel.SetActive(false);
         }
 
         if (visitedCapabilities == 8)
         {
             chosen = capabilities[7];
+            chosenSprite = VR_sprite;
             SummaryButton.SetActive(true);
+            SummaryPanel.SetActive(false);
+            HideMainButtons();
         }
-        handleTextColorChange("Text_VR");
-        handleIconSwap(VR_sprite);
-        handleTitleChange(capabilityStrings[7]);
-        PlayTimeline();
+        else
+        {
+            handleTextColorChange("Text_VR");
+            handleIconSwap(VR_sprite);
+            handleTitleChange(capabilityStrings[7]);
+            PlayTimeline();
+        }
     }
 
     #endregion
@@ -694,6 +765,12 @@ public class InteractionManager : MonoBehaviour
                 GameObject.Find($"Male-{capability}-Panel").GetComponent<Image>().color = tieColor;
                 GameObject.Find($"Female-{capability}").GetComponent<Text>().text = "";
                 GameObject.Find($"Male-{capability}").GetComponent<Text>().text = "";
+
+                //handle the other value
+                if (otherValue < femaleValue)
+                {
+                    GameObject.Find($"Other-{capability}").GetComponent<Text>().text = "";
+                }
             }
 
             if (femaleValue == otherValue)
@@ -702,6 +779,12 @@ public class InteractionManager : MonoBehaviour
                 GameObject.Find($"Other-{capability}-Panel").GetComponent<Image>().color = tieColor;
                 GameObject.Find($"Female-{capability}").GetComponent<Text>().text = "";
                 GameObject.Find($"Other-{capability}").GetComponent<Text>().text = "";
+
+                //handle the other value
+                if (maleValue < femaleValue)
+                {
+                    GameObject.Find($"Male-{capability}").GetComponent<Text>().text = "";
+                }
             }
 
             if (otherValue == maleValue)
@@ -710,6 +793,12 @@ public class InteractionManager : MonoBehaviour
                 GameObject.Find($"Male-{capability}-Panel").GetComponent<Image>().color = tieColor;
                 GameObject.Find($"Other-{capability}").GetComponent<Text>().text = "";
                 GameObject.Find($"Male-{capability}").GetComponent<Text>().text = "";
+
+                //handle the other value
+                if (femaleValue < otherValue)
+                {
+                    GameObject.Find($"Female-{capability}").GetComponent<Text>().text = "";
+                }
             }
         }
 
@@ -732,7 +821,6 @@ public class InteractionManager : MonoBehaviour
 
     private void HideMainButtons()
     {
-
         MainButtons.SetActive(false);
     }
 
@@ -757,6 +845,7 @@ public class InteractionManager : MonoBehaviour
         {
             SummaryPanel.SetActive(true);
         }
+
 
     }
 
